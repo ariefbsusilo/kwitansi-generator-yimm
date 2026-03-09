@@ -138,7 +138,7 @@ def generate_kwitansi(data):
 
 # --- ANTARMUKA STREAMLIT ---
 st.set_page_config(page_title="Kwitansi Generator", layout="wide")
-st.title("🧾 Generator Kwitansi Batch")
+st.title("🧾 Generator Kwitansi Yamaha")
 st.write("Upload file Excel. Teks kiri tebal (bold), teks kanan biasa, dan dirapikan otomatis.")
 
 uploaded_file = st.file_uploader("Upload Excel Template", type=['xlsx'])
@@ -182,3 +182,4 @@ if uploaded_file is not None:
                 file_name="Kwitansi_Batch_Final.zip",
                 mime="application/zip"
             )
+
