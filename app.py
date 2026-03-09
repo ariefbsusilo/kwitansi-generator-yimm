@@ -51,20 +51,25 @@ def generate_kwitansi(data):
     pdf.cell(0, 10, "KWITANSI", ln=1, align='C')
     pdf.ln(5)
     
-    # Fungsi pembantu untuk baris dengan teks panjang (Bold di Kiri, Regular di Kanan)
-    def add_wrapped_row(label, value):
+    # Fungsi pembantu dengan opsi teks value tebal (is_bold_value)
+    def add_wrapped_row(label, value, is_bold_value=False):
         # Set Font Label ke Bold
         pdf.set_font("Arial", 'B', 10)
         pdf.cell(50, 6, label, 0, 0)
         pdf.cell(5, 6, ":", 0, 0)
         
-        # Set Font Value ke Regular (Biasa)
-        pdf.set_font("Arial", '', 10)
+        # Cek apakah value perlu ditebalkan
+        if is_bold_value:
+            pdf.set_font("Arial", 'B', 10)
+        else:
+            pdf.set_font("Arial", '', 10)
+            
         pdf.multi_cell(0, 6, str(value), 0, 'L')
 
     # Mengisi Data Header
     add_wrapped_row("NO", data['Agreement No.'])
-    add_wrapped_row("Sudah terima dari", "PT. YAMAHA INDONESIA MOTOR MANUFACTURING")
+    # PT YAMAHA dibuat tebal dengan menambahkan parameter True
+    add_wrapped_row("Sudah terima dari", "PT. YAMAHA INDONESIA MOTOR MANUFACTURING", is_bold_value=True)
     add_wrapped_row("Terbilang", data['Terbilang'])
     add_wrapped_row("Untuk pembayaran", data['Activity Theme'])
     
@@ -73,7 +78,7 @@ def generate_kwitansi(data):
     # --- Tabel Rincian Angka ---
     
     # Subtotal
-    pdf.set_font("Arial", 'B', 10) # Label Bold
+    pdf.set_font("Arial", 'B', 10) 
     pdf.cell(50, 6, "Subtotal", 0, 0)
     pdf.cell(5, 6, "", 0, 0)
     
@@ -116,14 +121,12 @@ def generate_kwitansi(data):
     
     pdf.ln(1)
     
-    # Jumlah (Label Bold, Angka Regular)
-    pdf.set_font("Arial", 'B', 11)
+    # Jumlah (Label Bold & Angka Bold)
+    pdf.set_font("Arial", 'B', 11) # Font ditebalkan mulai dari sini
     pdf.cell(20, 6, "", 0, 0) 
     pdf.cell(30, 6, "Jumlah", 0, 0, 'C')
-    
-    pdf.set_font("Arial", '', 11)
     pdf.cell(15, 6, "Rp", 0, 0, 'C')
-    pdf.cell(35, 6, f"{data['Jumlah']:,.2f}", 0, 1, 'R')
+    pdf.cell(35, 6, f"{data['Jumlah']:,.2f}", 0, 1, 'R') # Karena tidak diubah, angka ikut tebal
     
     # Ruang kosong untuk Tanda Tangan
     pdf.ln(15) 
@@ -138,8 +141,8 @@ def generate_kwitansi(data):
 
 # --- ANTARMUKA STREAMLIT ---
 st.set_page_config(page_title="Kwitansi Generator", layout="wide")
-st.title("🧾 Generator Kwitansi Yamaha")
-st.write("Upload file Excel. Teks kiri tebal (bold), teks kanan biasa, dan dirapikan otomatis.")
+st.title("🧾 Kwitansi Generator YIMM")
+st.write("Upload file Excel. Teks PT Yamaha dan Total Jumlah dicetak tebal.")
 
 uploaded_file = st.file_uploader("Upload Excel Template", type=['xlsx'])
 
@@ -179,7 +182,6 @@ if uploaded_file is not None:
             st.download_button(
                 label="📥 Download Semua Kwitansi (.zip)",
                 data=zip_buffer.getvalue(),
-                file_name="Kwitansi_Batch_Final.zip",
+                file_name="Kwitansi_Batch.zip",
                 mime="application/zip"
             )
-
