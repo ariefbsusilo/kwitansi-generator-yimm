@@ -174,7 +174,7 @@ if uploaded_file is not None:
                     pdf_bytes = generate_kwitansi(data_dict)
                     
                     safe_agreement_no = str(data_dict['Agreement No.']).replace('/', '-')
-                    nama_file = f"Kwitansi_{data_dict['PIC']}_{safe_agreement_no}.pdf"
+                    nama_file = f"Kwitansi No.{safe_agreement_no}.pdf"
                     
                     zip_file.writestr(nama_file, pdf_bytes)
             
@@ -185,3 +185,4 @@ if uploaded_file is not None:
                 file_name="Kwitansi_Batch.zip",
                 mime="application/zip"
             )
+
